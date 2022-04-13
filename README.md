@@ -16,6 +16,16 @@ mongoclient/mongoclient         latest              16ff4e68d176        18 month
 (2)  Before deploying the cp-kafka container, need to create a new user and group, both named appuser (uid 1000, gid 1000), on the host, assign it to be the owner of the local directoty ./kafka/data, to be mounted as /var/lib/kafka/data in the container.
 Otherwise, cp-kafka would complain /var/lib/kafka/data and fail to start.
 
-(3)  Need to spell out the environment variable ZOO_SERVERS for the zookeeper service in docker-compose.yaml exactly as:
-     ZOO_SERVERS: server.1=zookeeper:2888:3888;2181
-Otherwise, zoo
+(3)  Need to spell out the environment variable ZOO_SERVERS for zookeeper exactly as follows in docker-compose.yaml:
+ZOO_SERVERS: server.1=zookeeper:2888:3888;2181
+Otherwise, zookeeper would complain about an SASL authentication error and cp-kaffka would fail to start.
+
+(4) MongoDB no longer supports the --smallfiles option. Need to remove it from the command attribute for mongodb in docker-compose.yaml:
+ command: --bind_ip_all
+
+(5) To deploy the eclipse-mosquitto MQTT broker container, need to enter the container and edit /mosquitto/config/mosquitto.conf to speicfy these settings explicitely:
+listener 1883
+allow_anonoymous true
+Otherwise, the container would throw an error that no address is available and the the Confluent MQTT source connector would fail to connect to it.
+Workaround is to commit the container to a new image, snpsuen/eclipse-mosquitto:2.0.14, after modifying mosquitto.conf and pull it to deploy afterward.
+
