@@ -14,7 +14,7 @@ efrecon/mqtt-client             latest              d035c182da36        6 months
 mongoclient/mongoclient         latest              16ff4e68d176        18 months ago       1.18GB
 
 (2)  Before deploying the cp-kafka container, need to create a new user and group, both named appuser (uid 1000, gid 1000), on the host, assign it to be the owner of the local directoty ./kafka/data, to be mounted as /var/lib/kafka/data in the container.
-Otherwise, cp-kafka would complain /var/lib/kafka/data and fail to start.
+Otherwise, cp-kafka would complain /var/lib/kafka/data is not writable and fail to start.
 
 (3)  Need to spell out the environment variable ZOO_SERVERS for zookeeper exactly as follows in docker-compose.yaml:
 ZOO_SERVERS: server.1=zookeeper:2888:3888;2181
@@ -29,3 +29,19 @@ allow_anonoymous true
 Otherwise, the container would throw an error that no address is available and the the Confluent MQTT source connector would fail to connect to it.
 Workaround is to commit the container to a new image, snpsuen/eclipse-mosquitto:2.0.14, after modifying mosquitto.conf and pull it to deploy afterward.
 
+(6) Finally, the MongoDB-supplied sink connector, com.mongodb.kafka.connect.MongoSinkConnector, is adopted and should be configured at a minimum as follows in connect-mongodb-sink.json:
+{
+	"name": "mongo-sink",
+	"config": {
+		"connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
+		"tasks.max": "1",
+		"topics": "connect-custom",		
+		"connection.uri": "mongodb://mongo-db:27017",
+		"database": "test",
+		"collection": "MyCollection",
+		"key.converter": "org.apache.kafka.connect.json.JsonConverter",
+		"key.converter.schemas.enable": false,
+		"value.converter": "org.apache.kafka.connect.json.JsonConverter",
+		"value.converter.schemas.enable": false
+	}
+}
