@@ -5,7 +5,7 @@ This is a revision of the guide to update the docker image versions and modify t
 <p> Summary of key change logs:
 
 <pre>
-(1)  All docker images pulled are of the latest version as of 12 April <br>
+(1)  All docker images pulled are of the latest version as of 12 April.
 confluentinc/cp-kafka-connect   latest              636808fa6198        6 days ago          1.45GB
 confluentinc/cp-kafka           latest              5c24320a9696        6 days ago          783MB
 eclipse-mosquitto               latest              58900513926f        6 days ago          11.8MB
@@ -13,6 +13,9 @@ zookeeper                       latest              3bfde2963555        12 days 
 efrecon/mqtt-client             latest              d035c182da36        6 months ago        6.46MB
 mongoclient/mongoclient         latest              16ff4e68d176        18 months ago       1.18GB
 
-(2)  For the cp-kafk
+(2)  Before deploying the cp-kafka container, need to create a new user and group, both named appuser (uid 1000, gid 1000), on the host, assign it to be the owner of the local directoty ./kafka/data, to be mounted as /var/lib/kafka/data in the container.
+Otherwise, cp-kafka would complain /var/lib/kafka/data and fail to start.
 
-</pre>
+(3)  Need to spell out the environment variable ZOO_SERVERS for the zookeeper service in docker-compose.yaml exactly as:
+     ZOO_SERVERS: server.1=zookeeper:2888:3888;2181
+Otherwise, zoo
