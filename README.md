@@ -5,7 +5,7 @@ This is a revision of the guide to update the docker image versions and modify t
 <p> Summary of key change logs:
 
 <pre>
-(1)  All docker images pulled are of the latest version as of 12 April.
+(1)  All docker images pulled are of the latest version as of 12 April, 2022.
 confluentinc/cp-kafka-connect   latest              636808fa6198        6 days ago          1.45GB
 confluentinc/cp-kafka           latest              5c24320a9696        6 days ago          783MB
 eclipse-mosquitto               latest              58900513926f        6 days ago          11.8MB
