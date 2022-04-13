@@ -26,7 +26,7 @@ Otherwise, zookeeper would complain about an SASL authentication error and cp-ka
 (5) To deploy the eclipse-mosquitto MQTT broker container, need to enter the container and edit /mosquitto/config/mosquitto.conf to speicfy these settings explicitely:
 listener 1883
 allow_anonoymous true
-Otherwise, the container would throw an error that no address is available and the the Confluent MQTT source connector would fail to connect to it.
+Otherwise, the container would throw an error that no address is available and the Confluent MQTT source connector would fail to connect to it.
 Workaround is to commit the container to a new image, snpsuen/eclipse-mosquitto:2.0.14, after modifying mosquitto.conf and pull it to deploy afterward.
 
 (6) Finally, the MongoDB-supplied sink connector, com.mongodb.kafka.connect.MongoSinkConnector, is adopted and should be configured at a minimum as follows in connect-mongodb-sink.json:
